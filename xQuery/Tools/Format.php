@@ -67,27 +67,4 @@ class Format
 
         return $arrayReturn ? [$time, $unit] : "$time $unit";
     }
-
-    public static function ServerAddress(string $address): string
-    {
-        if (filter_var($address, FILTER_VALIDATE_URL)) {
-            $address = str_ends_with($address, '/') ? $address : "$address/";
-            $httpsAddress = str_replace(['api://', 'http://', 'https://'], 'https://', $address);
-            $curl = curl_init();
-            $options = [
-                CURLOPT_URL => $httpsAddress,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_FAILONERROR => true,
-            ];
-            curl_setopt_array($curl, $options);
-            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            curl_close($curl);
-
-            if ($httpCode && $httpCode < 300) return $httpsAddress;
-
-            return str_replace('https://', 'http://', $httpsAddress);
-        }
-
-        return '';
-    }
 }
